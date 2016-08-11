@@ -75,7 +75,10 @@ Use the <let> element to define the attribute if necessary.
   <let name="transition"
         value="if ($journals//npg:Journal[npg:pcode=$pcode]/npg:isTransitionJournal='true') then 'yes'     else ()"/>
   <let name="maestro-rj"
-        value="if (matches($pcode,'^(maestrorj|npgdelor|testnatevent|testpalevent|nplants|nrdp|nmicrobiol|nenergy|natrevmats|natastron|natbiomedeng|natecolevol|nathumbehav|natrevchem)$')) then 'yes'     else ()"/>
+        value="if (matches($pcode,'^(maestrorj|npgdelor|testnatevent|testpalevent|nplants|nrdp|nmicrobiol|nenergy|natrevmats)$')) then 'yes'     else ()"/>
+  <!--removed |natastron|natbiomedeng|natecolevol|nathumbehav|natrevchem to test new doi structures-->
+  <let name="maestro-2017"
+        value="if (matches($pcode,'^(natastron|natbiomedeng|natecolevol|nathumbehav|natrevchem)$')) then 'yes'     else ()"/>
   <let name="maestro"
         value="if (matches($pcode,'^(testnatevent|testpalevent)$')) then 'no' else      if ($maestro-aj='yes' or $maestro-rj='yes') then 'yes' else ()"/>
   <let name="npj_journal"
@@ -746,7 +749,7 @@ Use the <let> element to define the attribute if necessary.
             role="error">
          <let name="status" value="meta-value"/>
          <let name="derived-status"
-              value="if ($maestro-aj='yes' or $existing-oa-aj='yes') then 'online'         else if ($maestro-rj='yes' and ancestor::article-meta/pub-date[@pub-type='epub']) then 'online'         else if ($maestro-rj='yes' and ancestor::article-meta/pub-date[@pub-type='aop']) then 'aop'         else if (ancestor::article-meta/pub-date[@pub-type='epub'] or ancestor::article-meta/pub-date[@pub-type='cover-date']) then 'issue'         else if (ancestor::article-meta/pub-date[@pub-type='aop']) then 'aop'         else if (ancestor::article-meta/pub-date[@pub-type='fav']) then 'fav'         else 'issue'"/>
+              value="if ($maestro-aj='yes' or $existing-oa-aj='yes') then 'online'         else if ($maestro-rj='yes' and ancestor::article-meta/pub-date[@pub-type='epub']) then 'online'         else if ($maestro-rj='yes' and ancestor::article-meta/pub-date[@pub-type='aop']) then 'aop'         else if ($maestro-2017='yes') then 'online'         else if (ancestor::article-meta/pub-date[@pub-type='epub'] or ancestor::article-meta/pub-date[@pub-type='cover-date']) then 'issue'         else if (ancestor::article-meta/pub-date[@pub-type='aop']) then 'aop'         else if (ancestor::article-meta/pub-date[@pub-type='fav']) then 'fav'         else 'issue'"/>
          <assert id="custom2"
                  test="not($journals//npg:Journal[npg:pcode=$pcode]) or $status=$derived-status">Unexpected value for "publish-type" (<value-of select="$status"/>). Expected value for this journal and publication status is "<value-of select="$derived-status"/>".</assert>
       </rule>
